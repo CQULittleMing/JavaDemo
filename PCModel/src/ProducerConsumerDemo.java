@@ -35,6 +35,8 @@ public class ProducerConsumerDemo {
                         mBuffer.offer(new Item());
                         print(getName() + " produce an item, now buffer has " + mBuffer.size() + " item");
                         mBuffer.notifyAll();
+                    } else {
+                        waitOn(mBuffer);
                     }
                 }
             }
@@ -55,12 +57,9 @@ public class ProducerConsumerDemo {
                     if (mBuffer.size() > 0) {
                         mBuffer.poll();
                         print(getName() + " consume an item, now buffer has " + mBuffer.size() + " item");
+                        mBuffer.notifyAll();
                     } else {
-                        try {
-                            mBuffer.wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                        waitOn(mBuffer);
                     }
                 }
             }
@@ -68,6 +67,14 @@ public class ProducerConsumerDemo {
     }
 
     class Item{
+    }
+
+    void waitOn(final Object o){
+        try {
+            o.wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
